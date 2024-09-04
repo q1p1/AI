@@ -17,9 +17,10 @@ const App: React.FC = () => {
         const response = await axios.post(
           "https://api.cohere.ai/generate",
           {
-            model: "command-xlarge-nightly", // استخدام النموذج المتاح
+            model: "command-xlarge", // جرب نموذج آخر
             prompt: message, // النص الذي سيتم إرساله إلى API
             max_tokens: 150, // الحد الأقصى من الكلمات التي سيتم توليدها
+            api_version: "2021-11-08", // إضافة إصدار API
           },
           {
             headers: {
@@ -32,13 +33,9 @@ const App: React.FC = () => {
         // طباعة الرد الكامل للتأكد من شكل البيانات
         console.log("Cohere API Response:", response.data);
 
-        // التحقق مما إذا كانت البيانات المستلمة تحتوي على "generations"
-        if (
-          response.data &&
-          response.data.generations &&
-          response.data.generations.length > 0
-        ) {
-          const botMessage = response.data.generations[0].text.trim();
+        // استخراج النص من الرد
+        if (response.data && response.data.text) {
+          const botMessage = response.data.text.trim();
           setChatLog((prevLog) => [...prevLog, `Bot: ${botMessage}`]);
         } else {
           setChatLog((prevLog) => [
@@ -59,8 +56,8 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center">
-      <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-md">
+    <div className="min-h-screen bg-gray-600   flex flex-col items-center justify-center">
+      <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-xl">
         <h1 className="text-2xl font-bold text-center mb-4">AI Chatbot</h1>
         <div className="border border-gray-300 rounded-lg p-4 mb-4 h-64 overflow-y-auto">
           {chatLog.map((msg, index) => (
